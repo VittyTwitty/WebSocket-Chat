@@ -36,7 +36,6 @@ wss.on('connection', function connewction(ws) {
   };
   users.push(users.length);
   console.log("Player ID ", users.length, "is connected");
-  console.log("Player ID ", usersInfo.idOfUser, "is connected");
 
 
   ws.on('close', function () {
