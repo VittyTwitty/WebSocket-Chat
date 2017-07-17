@@ -4,18 +4,45 @@ const express = require('express'),
   WebSocket = require('ws'),
   app = express();
 
+let resultT = '';  
+
+var mysql = require('mysql');
+
+var con = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '123',
+    database: 'mydb'
+});
+
+
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 
-app.use(express.static('app'));
+//app.use(express.static('app'));
 
+
+function dataTable() {
+  con.connect(function(err) {
+    if (err) throw err;
+    // let sql = 'INSERT INTO students (name, age, groups) VALUE ("Vitalii", 23, 110)';
+    // con.query(sql, function(err, result) {
+    //     if (err) throw err;
+    //     console.log(result);
+    // });
+    let sql = 'SELECT * FROM students';
+    con.query(sql, function(err, result) {      
+        resultT = result;
+    });
+  });
+}
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/index.html');
+  //res.sendFile(__dirname + '/index.html');
+  console.log(resultT)
+  res.send(resultT);
+  
 });
-
-
-
 
 users = [];
 
@@ -92,9 +119,12 @@ wss.broadcast = function broadcast(thisMessage) {
 };
 
 server.listen(8080, function listening() {
+
   console.log('Listening on %d', server.address().port);
 
 })
+
+
 
 setInterval(wss.broadcast, 1500);
 
